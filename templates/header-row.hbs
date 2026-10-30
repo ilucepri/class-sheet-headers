@@ -1,0 +1,33 @@
+<div class="csh-row {{#if src}}csh-has-image{{/if}}" {{#if search}}data-search="{{ search }}"{{/if}}>
+    <div class="csh-row-label">
+        {{#if img}}<img src="{{ img }}" alt="">{{/if}}
+        <span class="csh-row-name">{{ label }}</span>
+        {{#if hint}}<span class="csh-row-hint">{{ hint }}</span>{{/if}}
+    </div>
+    <file-picker name="{{ name }}.src" type="image" value="{{ src }}"
+                 aria-label="{{ localize 'CLASSHEADERS.Image' }}"></file-picker>
+    {{#if forceable}}
+    <label class="csh-force">
+        <input type="checkbox" name="{{ name }}.force" {{checked force}}>
+        {{ localize "CLASSHEADERS.Config.Force" }}
+    </label>
+    {{/if}}
+
+    <div class="csh-editor">
+        <div class="csh-preview" data-tooltip="CLASSHEADERS.Editor.Hint">
+            <img src="{{ src }}" alt="" draggable="false" style="{{ transform }}">
+        </div>
+        <div class="csh-zoom">
+            <i class="fas fa-magnifying-glass-minus" inert></i>
+            <input type="range" name="{{ name }}.scale" min="{{ minScale }}" max="{{ maxScale }}" step="0.01"
+                   value="{{ scale }}" aria-label="{{ localize 'CLASSHEADERS.Editor.Zoom' }}">
+            <i class="fas fa-magnifying-glass-plus" inert></i>
+            <button type="button" class="unbutton csh-reset" data-csh-reset
+                    data-tooltip="CLASSHEADERS.Editor.Reset" aria-label="{{ localize 'CLASSHEADERS.Editor.Reset' }}">
+                <i class="fas fa-expand" inert></i>
+            </button>
+        </div>
+        <input type="hidden" name="{{ name }}.x" value="{{ x }}">
+        <input type="hidden" name="{{ name }}.y" value="{{ y }}">
+    </div>
+</div>

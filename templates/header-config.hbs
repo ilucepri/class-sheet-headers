@@ -1,0 +1,27 @@
+<div class="csh-body">
+    <p class="hint">{{ localize "CLASSHEADERS.Config.Hint" }}</p>
+    <p class="csh-notice csh-disabled-notice" {{#if active}}hidden{{/if}}>
+        <i class="fas fa-triangle-exclamation" inert></i> {{ localize "CLASSHEADERS.Config.DisabledNotice" }}
+    </p>
+
+    <section class="csh-section">
+        <h3 class="csh-title">{{ localize "CLASSHEADERS.Config.CampaignTitle" }}</h3>
+        {{#with campaign}}{{> "modules/class-sheet-headers/templates/header-row.hbs" }}{{/with}}
+    </section>
+
+    <section class="csh-section">
+        <h3 class="csh-title">{{ localize "CLASSHEADERS.Config.Fallbacks" }}</h3>
+        {{#each fallbacks}}{{> "modules/class-sheet-headers/templates/header-row.hbs" }}{{/each}}
+    </section>
+
+    <section class="csh-section csh-classes">
+        <h3 class="csh-title">{{ localize "CLASSHEADERS.Config.Classes" }}</h3>
+        <input type="search" class="csh-search" placeholder="{{ localize 'CLASSHEADERS.Config.Search' }}"
+               aria-label="{{ localize 'CLASSHEADERS.Config.Search' }}">
+        {{#each classes}}
+        {{> "modules/class-sheet-headers/templates/header-row.hbs" }}
+        {{else}}
+        <p class="csh-empty">{{ localize "CLASSHEADERS.Config.NoClasses" }}</p>
+        {{/each}}
+    </section>
+</div>

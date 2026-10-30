@@ -1,0 +1,66 @@
+{
+  "CLASSHEADERS": {
+    "Image": "Header image",
+    "Menu": {
+      "Name": "Sheet headers",
+      "Label": "Configure headers",
+      "Hint": "Choose a header image for each class and for player and non-player characters."
+    },
+    "Settings": {
+      "Multiclass": {
+        "Name": "Multiclass header",
+        "Hint": "Which class picks the header of a character with several classes.",
+        "Original": "The original class",
+        "Highest": "The highest-level class"
+      },
+      "PlayerOnly": {
+        "Name": "Class images for player characters only",
+        "Hint": "When enabled, class images are only used on characters owned by a player."
+      },
+      "AllowPlayers": {
+        "Name": "Players can choose their header",
+        "Hint": "Lets a character's owners give it its own header image from the sheet."
+      }
+    },
+    "Config": {
+      "Title": "Sheet headers",
+      "Hint": "Priority: the character's own image, then its class image, then the general image, then the campaign image. Drag the preview to move the image and use the wheel or the slider to zoom.",
+      "CampaignTitle": "Campaign",
+      "Campaign": "Campaign image",
+      "CampaignHint": "For every character",
+      "Force": "Force for everyone (ignores class and character images)",
+      "Disable": "Use the basic header",
+      "Enable": "Re-enable custom headers",
+      "DisabledNotice": "Custom headers are off: every sheet uses the basic D&D5e header. Your images are still saved.",
+      "Fallbacks": "General images",
+      "Player": "Player characters",
+      "PlayerHint": "Owned by a player",
+      "Other": "Other characters",
+      "OtherHint": "No player owner",
+      "Classes": "By class",
+      "Search": "Search classes…",
+      "NoClasses": "No classes found in the world or the compendiums."
+    },
+    "ActorConfig": {
+      "Title": "Sheet header",
+      "Hint": "An image for this character only. Leave it empty to use its class image.",
+      "Own": "Own image",
+      "Inherited": "Without its own image it uses",
+      "Reset": "Use the class image",
+      "Disabled": "The GM has turned custom headers off, so the basic header is shown.",
+      "Forced": "The campaign image is forced for everyone, so this character's own image won't show while it is."
+    },
+    "Source": {
+      "Class": "the {class} class image",
+      "Player": "the player character image",
+      "Other": "the other characters image",
+      "Campaign": "the campaign image",
+      "System": "the default D&D5e image"
+    },
+    "Editor": {
+      "Hint": "Drag to move · Wheel to zoom",
+      "Zoom": "Zoom",
+      "Reset": "Reset framing"
+    }
+  }
+}

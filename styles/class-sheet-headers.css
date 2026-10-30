@@ -1,0 +1,161 @@
+/* -------------------------------------------- */
+/*  Sheet header                                */
+/* -------------------------------------------- */
+
+.dnd5e2.sheet.actor.character .sheet-header:has(> .csh-header-image) {
+  isolation: isolate;
+}
+
+.dnd5e2.sheet.actor.character .csh-header-image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.csh-header-image img,
+.csh-config .csh-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+  transform-origin: center;
+}
+
+/* -------------------------------------------- */
+/*  Config windows                              */
+/* -------------------------------------------- */
+
+.csh-config .window-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.csh-config .csh-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.csh-config .csh-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.csh-config .csh-title {
+  margin: 0;
+  border-bottom: 1px solid var(--color-border, #7a7971);
+}
+
+.csh-config .csh-row,
+.csh-config .csh-inherited {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border, #7a7971);
+  border-radius: 6px;
+}
+
+.csh-config .csh-row[hidden] {
+  display: none;
+}
+
+.csh-config .csh-row-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.csh-config .csh-row-label img {
+  width: 28px;
+  height: 28px;
+  border: none;
+  object-fit: contain;
+}
+
+.csh-config .csh-row-name {
+  font-weight: bold;
+}
+
+.csh-config .csh-row-hint {
+  margin-left: auto;
+  font-size: var(--font-size-11, 11px);
+  opacity: 0.7;
+}
+
+.csh-config .csh-row:not(.csh-has-image) .csh-editor {
+  display: none;
+}
+
+.csh-config .csh-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.csh-config .csh-preview {
+  position: relative;
+  aspect-ratio: 1391 / 510;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #7a7971);
+  border-radius: 5px 5px 0 0;
+  background: repeating-conic-gradient(rgb(128 128 128 / 0.15) 0 25%, transparent 0 50%) 0 0 / 16px 16px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.csh-config .csh-preview:active {
+  cursor: grabbing;
+}
+
+.csh-config .csh-preview.csh-static {
+  cursor: default;
+}
+
+.csh-config .csh-zoom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.csh-config .csh-zoom input[type="range"] {
+  flex: 1;
+}
+
+.csh-config .csh-reset {
+  padding: 0 0.25rem;
+}
+
+.csh-config .csh-force {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.csh-config .csh-notice {
+  margin: 0;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--color-level-warning, #ee9b3a);
+  border-radius: 4px;
+  background: rgb(238 155 58 / 0.15);
+}
+
+.csh-config .csh-notice[hidden] {
+  display: none;
+}
+
+.csh-config .csh-empty {
+  text-align: center;
+  opacity: 0.7;
+}

@@ -1,0 +1,15 @@
+<div class="csh-body">
+    <p class="hint">{{ localize "CLASSHEADERS.ActorConfig.Hint" }}</p>
+    {{#if notice}}<p class="csh-notice"><i class="fas fa-triangle-exclamation" inert></i> {{ notice }}</p>{{/if}}
+
+    {{#with entry}}{{> "modules/class-sheet-headers/templates/header-row.hbs" }}{{/with}}
+
+    <div class="csh-inherited">
+        <span class="csh-row-name">
+            <i class="fas fa-circle-info" inert></i> {{ localize "CLASSHEADERS.ActorConfig.Inherited" }}: {{ inheritedLabel }}
+        </span>
+        {{#if inherited}}
+        <div class="csh-preview csh-static"><img src="{{ inherited.src }}" alt="" style="{{ inherited.transform }}"></div>
+        {{/if}}
+    </div>
+</div>

@@ -1,0 +1,66 @@
+{
+  "CLASSHEADERS": {
+    "Image": "Imagen del encabezado",
+    "Menu": {
+      "Name": "Encabezados de hoja",
+      "Label": "Configurar encabezados",
+      "Hint": "Elige una imagen de encabezado para cada clase y para los personajes jugables o no jugables."
+    },
+    "Settings": {
+      "Multiclass": {
+        "Name": "Clase de los multiclase",
+        "Hint": "Qué clase decide el encabezado de un personaje con varias clases.",
+        "Original": "La clase original",
+        "Highest": "La clase de mayor nivel"
+      },
+      "PlayerOnly": {
+        "Name": "Imágenes de clase solo para personajes jugables",
+        "Hint": "Si está activo, las imágenes por clase solo se usan en personajes que tienen un jugador como propietario."
+      },
+      "AllowPlayers": {
+        "Name": "Los jugadores pueden elegir su encabezado",
+        "Hint": "Permite a los propietarios de un personaje ponerle su propia imagen de encabezado desde la hoja."
+      }
+    },
+    "Config": {
+      "Title": "Encabezados de hoja",
+      "Hint": "Prioridad: la imagen propia del personaje, después la de su clase, luego la imagen general y por último la de campaña. Arrastra la vista previa para mover la imagen y usa la rueda o el deslizador para hacer zoom.",
+      "CampaignTitle": "Campaña",
+      "Campaign": "Imagen de campaña",
+      "CampaignHint": "Para todos los personajes",
+      "Force": "Forzar para todos (ignora las imágenes de clase y de personaje)",
+      "Disable": "Usar el header básico",
+      "Enable": "Reactivar headers personalizados",
+      "DisabledNotice": "Los headers personalizados están desactivados: todas las hojas usan el header básico de D&D5e. Tus imágenes siguen guardadas.",
+      "Fallbacks": "Imágenes generales",
+      "Player": "Personajes jugables",
+      "PlayerHint": "Con un jugador propietario",
+      "Other": "Resto de personajes",
+      "OtherHint": "Sin jugador propietario",
+      "Classes": "Por clase",
+      "Search": "Buscar clase…",
+      "NoClasses": "No se ha encontrado ninguna clase en el mundo ni en los compendios."
+    },
+    "ActorConfig": {
+      "Title": "Encabezado de la hoja",
+      "Hint": "Una imagen solo para este personaje. Déjala vacía para usar la de su clase.",
+      "Own": "Imagen propia",
+      "Inherited": "Sin imagen propia se usa",
+      "Reset": "Usar la de la clase",
+      "Disabled": "El DM ha desactivado los headers personalizados, así que ahora se ve el header básico.",
+      "Forced": "La imagen de campaña está forzada para todos, así que la imagen propia no se mostrará mientras siga así."
+    },
+    "Source": {
+      "Class": "la imagen de la clase {class}",
+      "Player": "la imagen de personajes jugables",
+      "Other": "la imagen del resto de personajes",
+      "Campaign": "la imagen de campaña",
+      "System": "la imagen por defecto de D&D5e"
+    },
+    "Editor": {
+      "Hint": "Arrastra para mover · Rueda para hacer zoom",
+      "Zoom": "Zoom",
+      "Reset": "Restablecer encuadre"
+    }
+  }
+}
