@@ -2,7 +2,7 @@
   "id": "class-sheet-headers",
   "title": "Class Sheet Headers",
   "description": "Customize the header image of dnd5e character sheets per class, for player characters, or per actor.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "authors": [{ "name": "Irene Lucena Prieto" }],
   "compatibility": {
     "minimum": "13",
@@ -19,7 +19,7 @@
   },
   "url": "https://github.com/ilucepri/class-sheet-headers",
   "manifest": "https://github.com/ilucepri/class-sheet-headers/releases/latest/download/module.json",
-  "download": "https://github.com/ilucepri/class-sheet-headers/releases/download/v0.2.0/module.zip",
+  "download": "https://github.com/ilucepri/class-sheet-headers/releases/download/v0.2.1/module.zip",
   "esmodules": ["scripts/main.mjs"],
   "styles": ["styles/class-sheet-headers.css"],
   "languages": [

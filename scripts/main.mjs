@@ -76,6 +76,10 @@ Hooks.once("init", () => {
 
 Hooks.on("renderCharacterActorSheet", (sheet, element) => applyHeader(sheet.actor, element));
 
+Hooks.on("clientSettingChanged", key => {
+  if ( key === "core.uiConfig" ) requestAnimationFrame(refreshSheets);
+});
+
 Hooks.on("getHeaderControlsCharacterActorSheet", (sheet, controls) => {
   if ( !canConfigure(sheet.actor) ) return;
   sheet.options.actions.cshConfigureHeader ??= function() { ActorHeaderConfig.open(this.actor); };
@@ -155,18 +159,32 @@ function applyHeader(actor, element) {
     return;
   }
 
-  layer ??= header.insertAdjacentElement("afterbegin", createFrame("csh-header-image"));
-  header.style.setProperty(HEADER_VAR, "none");
-  updateFrame(layer, entry);
+  const theme = getComputedStyle(content ?? element);
+  if ( hasValue(theme.getPropertyValue(HEADER_VAR)) ) {
+    layer ??= header.insertAdjacentElement("afterbegin", createFrame("csh-header-image"));
+    header.style.setProperty(HEADER_VAR, "none");
+    updateFrame(layer, entry);
+  }
+  else if ( layer ) {
+    layer.remove();
+    header.style.removeProperty(HEADER_VAR);
+  }
 
   if ( !content ) return;
-  const backgroundContent = getComputedStyle(content).getPropertyValue("--dnd5e-character-background-content").trim();
-  if ( backgroundContent && (backgroundContent !== "none") ) {
+  if ( hasValue(theme.getPropertyValue("--dnd5e-character-background-content")) ) {
     background ??= content.insertAdjacentElement("afterbegin", createBackground());
     content.style.setProperty(BACKGROUND_VAR, "none");
     updateFrame(background.firstElementChild, entry);
   }
-  else background?.remove();
+  else if ( background ) {
+    background.remove();
+    content.style.removeProperty(BACKGROUND_VAR);
+  }
+}
+
+function hasValue(value) {
+  value = value.trim();
+  return !!value && (value !== "none") && (value !== "transparent");
 }
 
 function createFrame(className) {

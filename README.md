@@ -7,7 +7,7 @@ Foundry VTT module for the dnd5e system. It changes the header image of characte
 - **Per character**: from the sheet's header menu (*Sheet header*), the GM or the owner can give a character its own image.
 - **Campaign image**: one image for every character, handy for themed campaigns. By default it is the last fallback; tick *Force for everyone* to show it on every sheet, over class and character images.
 - **Use the basic header**: a button at the bottom of the config window turns every custom header off and shows the dnd5e default, without deleting any image. Press it again to bring them back.
-- **Framing editor**: the whole image is shown when you pick it, with a frame the shape of the header. Drag the frame to choose the part you want and zoom in with the mouse wheel or the slider; a live preview shows the resulting header. The same framing is used for the faded background the sheet shows under the header in dark mode.
+- **Framing editor**: the whole image is shown when you pick it, with a frame the shape of the header. Drag the frame to choose the part you want and zoom in with the mouse wheel or the slider; a live preview shows the resulting header. In dark mode, like dnd5e itself, the header has no image of its own: the chosen image is shown faded behind it, with the same framing.
 
 Priority: forced campaign image → the character's own image → its class image → the general image → the campaign image → the dnd5e default.
 
