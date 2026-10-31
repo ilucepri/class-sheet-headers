@@ -24,7 +24,7 @@
     },
     "Config": {
       "Title": "Encabezados de hoja",
-      "Hint": "Prioridad: la imagen propia del personaje, después la de su clase, luego la imagen general y por último la de campaña. Arrastra la vista previa para mover la imagen y usa la rueda o el deslizador para hacer zoom.",
+      "Hint": "Prioridad: la imagen propia del personaje, después la de su clase, luego la imagen general y por último la de campaña. Al elegir una imagen se ve entera: arrastra el marco para elegir qué parte sale en el header y usa la rueda o el deslizador para acercarlo.",
       "CampaignTitle": "Campaña",
       "Campaign": "Imagen de campaña",
       "CampaignHint": "Para todos los personajes",
@@ -58,9 +58,10 @@
       "System": "la imagen por defecto de D&D5e"
     },
     "Editor": {
-      "Hint": "Arrastra para mover · Rueda para hacer zoom",
+      "Hint": "Arrastra el marco para moverlo · Rueda para hacer zoom",
       "Zoom": "Zoom",
-      "Reset": "Restablecer encuadre"
+      "Reset": "Volver a encajar",
+      "Result": "Así se verá el header"
     }
   }
 }

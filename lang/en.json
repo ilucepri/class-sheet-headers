@@ -24,7 +24,7 @@
     },
     "Config": {
       "Title": "Sheet headers",
-      "Hint": "Priority: the character's own image, then its class image, then the general image, then the campaign image. Drag the preview to move the image and use the wheel or the slider to zoom.",
+      "Hint": "Priority: the character's own image, then its class image, then the general image, then the campaign image. The whole image is shown when you pick it: drag the frame to choose which part goes in the header and use the wheel or the slider to zoom in.",
       "CampaignTitle": "Campaign",
       "Campaign": "Campaign image",
       "CampaignHint": "For every character",
@@ -58,9 +58,10 @@
       "System": "the default D&D5e image"
     },
     "Editor": {
-      "Hint": "Drag to move · Wheel to zoom",
+      "Hint": "Drag the frame to move it · Wheel to zoom",
       "Zoom": "Zoom",
-      "Reset": "Reset framing"
+      "Reset": "Fit again",
+      "Result": "How the header will look"
     }
   }
 }

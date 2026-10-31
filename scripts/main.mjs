@@ -4,8 +4,9 @@ const ACTOR_TEMPLATE = `modules/${MODULE_ID}/templates/actor-header.hbs`;
 const ROW_TEMPLATE = `modules/${MODULE_ID}/templates/header-row.hbs`;
 const FOOTER_TEMPLATE = "templates/generic/form-footer.hbs";
 const HEADER_VAR = "--dnd5e-character-header-image";
-const MIN_SCALE = 0.25;
-const MAX_SCALE = 4;
+const BACKGROUND_VAR = "--dnd5e-character-background-image";
+const HEADER_ASPECT = 1391 / 510;
+const MAX_ZOOM = 8;
 
 /* -------------------------------------------- */
 /*  Setup                                       */
@@ -88,9 +89,10 @@ Hooks.on("getHeaderControlsCharacterActorSheet", (sheet, controls) => {
 /**
  * @typedef {object} HeaderEntry
  * @property {string} src     Image path.
- * @property {number} x       Horizontal offset, in % of the header width.
- * @property {number} y       Vertical offset, in % of the header height.
- * @property {number} scale   Zoom over the image filling the header (1 = cover).
+ * @property {number} [x]    Crop left, as a fraction of the image width.
+ * @property {number} [y]    Crop top, as a fraction of the image height.
+ * @property {number} [w]    Crop width, as a fraction of the image width.
+ * @property {number} [r]    Image aspect ratio (width / height).
  */
 
 /**
@@ -137,25 +139,54 @@ function getMainClass(actor) {
 function applyHeader(actor, element) {
   const header = element?.querySelector(".sheet-header");
   if ( !header ) return;
+  const content = element.querySelector(".window-content");
   const entry = resolveHeader(actor);
   let layer = header.querySelector(":scope > .csh-header-image");
+  let background = content?.querySelector(":scope > .csh-background");
   if ( !entry ) {
     if ( layer ) {
       layer.remove();
       header.style.removeProperty(HEADER_VAR);
     }
+    if ( background ) {
+      background.remove();
+      content.style.removeProperty(BACKGROUND_VAR);
+    }
     return;
   }
-  if ( !layer ) {
-    layer = document.createElement("div");
-    layer.className = "csh-header-image";
-    layer.append(document.createElement("img"));
-    header.prepend(layer);
-  }
+
+  layer ??= header.insertAdjacentElement("afterbegin", createFrame("csh-header-image"));
   header.style.setProperty(HEADER_VAR, "none");
-  const img = layer.firstElementChild;
+  updateFrame(layer, entry);
+
+  if ( !content ) return;
+  const backgroundContent = getComputedStyle(content).getPropertyValue("--dnd5e-character-background-content").trim();
+  if ( backgroundContent && (backgroundContent !== "none") ) {
+    background ??= content.insertAdjacentElement("afterbegin", createBackground());
+    content.style.setProperty(BACKGROUND_VAR, "none");
+    updateFrame(background.firstElementChild, entry);
+  }
+  else background?.remove();
+}
+
+function createFrame(className) {
+  const frame = document.createElement("div");
+  frame.className = `${className} csh-frame`;
+  frame.append(document.createElement("img"));
+  return frame;
+}
+
+function createBackground() {
+  const background = document.createElement("div");
+  background.className = "csh-background";
+  background.append(createFrame("csh-background-frame"));
+  return background;
+}
+
+function updateFrame(frame, entry) {
+  const img = frame.firstElementChild;
   if ( img.getAttribute("src") !== entry.src ) img.src = entry.src;
-  img.style.transform = getTransform(entry);
+  img.setAttribute("style", getFrameStyle(entry));
 }
 
 function refreshSheets() {
@@ -175,9 +206,33 @@ function canConfigure(actor) {
 
 /**
  * @param {Partial<HeaderEntry>} entry
+ * @returns {string}
  */
-function getTransform(entry) {
-  return `translate(${entry?.x ?? 0}%, ${entry?.y ?? 0}%) scale(${entry?.scale ?? 1})`;
+function getFrameStyle(entry) {
+  if ( !entry?.w || !entry?.r ) return "inset: 0; width: 100%; height: 100%; object-fit: cover;";
+  const { x, y, w, r } = entry;
+  return [
+    `width: calc(100cqw / ${w})`,
+    `left: calc(-100cqw * ${x / w})`,
+    `top: calc(50cqh - 100cqw / ${2 * HEADER_ASPECT} - 100cqw * ${y / (w * r)})`
+  ].join("; ");
+}
+
+/** @param {number} r  Image aspect ratio. */
+function getMaxWidth(r) {
+  return Math.min(1, HEADER_ASPECT / r);
+}
+
+function getDefaultCrop(r) {
+  const w = getMaxWidth(r);
+  return { r, w, x: (1 - w) / 2, y: (1 - (w * r / HEADER_ASPECT)) / 2 };
+}
+
+function clampCrop({ x, y, w, r }) {
+  const max = getMaxWidth(r);
+  w = Math.clamp(w, max / MAX_ZOOM, max);
+  const h = w * r / HEADER_ASPECT;
+  return { r, w, x: Math.clamp(x, 0, 1 - w), y: Math.clamp(y, 0, 1 - h) };
 }
 
 /**
@@ -188,78 +243,100 @@ function rowContext(name, entry) {
   return {
     name,
     src: entry?.src ?? "",
-    x: entry?.x ?? 0,
-    y: entry?.y ?? 0,
-    scale: entry?.scale ?? 1,
-    transform: `transform: ${getTransform(entry)};`,
-    minScale: MIN_SCALE,
-    maxScale: MAX_SCALE
+    x: entry?.x ?? "",
+    y: entry?.y ?? "",
+    w: entry?.w ?? "",
+    r: entry?.r ?? "",
+    frameStyle: getFrameStyle(entry),
+    maxZoom: MAX_ZOOM
   };
 }
 
 /** @returns {HeaderEntry|{}} */
 function cleanEntry(entry) {
   if ( !entry?.src ) return {};
-  const number = (value, fallback) => (Number.isFinite(Number(value)) && (value !== "") ? Number(value) : fallback);
-  return {
-    src: entry.src,
-    x: Math.clamp(number(entry.x, 0), -100, 100),
-    y: Math.clamp(number(entry.y, 0), -100, 100),
-    scale: Math.clamp(number(entry.scale, 1), MIN_SCALE, MAX_SCALE)
-  };
+  const crop = ["x", "y", "w", "r"].map(k => Number(entry[k]));
+  if ( (entry.w === "") || !crop.every(Number.isFinite) || !(crop[3] > 0) ) return { src: entry.src };
+  const [x, y, w, r] = crop;
+  return { src: entry.src, ...clampCrop({ x, y, w, r }) };
 }
 
 function bindEditors(root) {
   for ( const row of root.querySelectorAll(".csh-row") ) {
     const picker = row.querySelector("file-picker");
-    const preview = row.querySelector(".csh-preview");
-    const img = preview.querySelector("img");
-    const fields = {
-      x: row.querySelector('input[name$=".x"]'),
-      y: row.querySelector('input[name$=".y"]'),
-      scale: row.querySelector('input[name$=".scale"]')
+    const canvas = row.querySelector(".csh-canvas");
+    const source = canvas.querySelector("img");
+    const box = canvas.querySelector(".csh-crop");
+    const result = row.querySelector(".csh-result img");
+    const zoom = row.querySelector(".csh-zoom-range");
+    const fields = Object.fromEntries(["x", "y", "w", "r"].map(k => [k, row.querySelector(`input[name$=".${k}"]`)]));
+    let crop = null;
+    let reset = false;
+
+    const write = next => {
+      crop = clampCrop(next);
+      for ( const [k, input] of Object.entries(fields) ) input.value = crop[k];
+      Object.assign(box.style, {
+        left: `${crop.x * 100}%`,
+        top: `${crop.y * 100}%`,
+        width: `${crop.w * 100}%`,
+        height: `${crop.w * crop.r / HEADER_ASPECT * 100}%`
+      });
+      zoom.value = getMaxWidth(crop.r) / crop.w;
+      result.setAttribute("style", getFrameStyle(crop));
     };
-    const read = () => ({ x: Number(fields.x.value), y: Number(fields.y.value), scale: Number(fields.scale.value) });
-    const write = ({ x, y, scale }) => {
-      fields.x.value = Math.clamp(x, -100, 100).toFixed(2);
-      fields.y.value = Math.clamp(y, -100, 100).toFixed(2);
-      fields.scale.value = Math.clamp(scale, MIN_SCALE, MAX_SCALE);
-      img.style.transform = getTransform(read());
+    const zoomTo = w => {
+      const h = crop.w * crop.r / HEADER_ASPECT;
+      const cx = crop.x + (crop.w / 2);
+      const cy = crop.y + (h / 2);
+      write({ r: crop.r, w, x: cx - (w / 2), y: cy - (w * crop.r / HEADER_ASPECT / 2) });
     };
+
+    const onLoad = () => {
+      if ( !source.naturalWidth ) return;
+      const r = source.naturalWidth / source.naturalHeight;
+      const stored = { x: Number(fields.x.value), y: Number(fields.y.value), w: Number(fields.w.value), r };
+      const valid = !reset && (fields.w.value !== "") && [stored.x, stored.y, stored.w].every(Number.isFinite);
+      reset = false;
+      write(valid ? stored : getDefaultCrop(r));
+    };
+    source.addEventListener("load", onLoad);
+    if ( source.complete ) onLoad();
 
     picker.addEventListener("change", () => {
-      img.src = picker.value;
       row.classList.toggle("csh-has-image", !!picker.value);
-      write({ x: 0, y: 0, scale: 1 });
+      if ( !picker.value ) return;
+      reset = true;
+      source.src = result.src = picker.value;
     });
-    fields.scale.addEventListener("input", () => write(read()));
-    row.querySelector("[data-csh-reset]")?.addEventListener("click", () => write({ x: 0, y: 0, scale: 1 }));
+    zoom.addEventListener("input", () => crop && zoomTo(getMaxWidth(crop.r) / Number(zoom.value)));
+    row.querySelector("[data-csh-reset]")?.addEventListener("click", () => crop && write(getDefaultCrop(crop.r)));
 
-    preview.addEventListener("wheel", event => {
+    canvas.addEventListener("wheel", event => {
+      if ( !crop ) return;
       event.preventDefault();
-      const current = read();
-      write({ ...current, scale: current.scale * Math.exp(-event.deltaY * 0.001) });
+      zoomTo(crop.w * Math.exp(event.deltaY * 0.001));
     }, { passive: false });
 
-    preview.addEventListener("pointerdown", event => {
-      if ( event.button !== 0 ) return;
+    canvas.addEventListener("pointerdown", event => {
+      if ( !crop || (event.button !== 0) ) return;
       event.preventDefault();
-      preview.setPointerCapture(event.pointerId);
-      const start = { ...read(), px: event.clientX, py: event.clientY };
-      const { width, height } = preview.getBoundingClientRect();
+      canvas.setPointerCapture(event.pointerId);
+      const start = { ...crop, px: event.clientX, py: event.clientY };
+      const { width, height } = canvas.getBoundingClientRect();
       const move = e => write({
         ...start,
-        x: start.x + ((e.clientX - start.px) / width) * 100,
-        y: start.y + ((e.clientY - start.py) / height) * 100
+        x: start.x + ((e.clientX - start.px) / width),
+        y: start.y + ((e.clientY - start.py) / height)
       });
       const stop = () => {
-        preview.removeEventListener("pointermove", move);
-        preview.removeEventListener("pointerup", stop);
-        preview.removeEventListener("pointercancel", stop);
+        canvas.removeEventListener("pointermove", move);
+        canvas.removeEventListener("pointerup", stop);
+        canvas.removeEventListener("pointercancel", stop);
       };
-      preview.addEventListener("pointermove", move);
-      preview.addEventListener("pointerup", stop);
-      preview.addEventListener("pointercancel", stop);
+      canvas.addEventListener("pointermove", move);
+      canvas.addEventListener("pointerup", stop);
+      canvas.addEventListener("pointercancel", stop);
     });
   }
 }
@@ -450,7 +527,7 @@ class ActorHeaderConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         ...rowContext("header", this.actor.getFlag(MODULE_ID, "header"))
       },
       inheritedLabel,
-      inherited: inherited ? { src: inherited.src, transform: `transform: ${getTransform(inherited)};` } : null,
+      inherited: inherited ? { src: inherited.src, frameStyle: getFrameStyle(inherited) } : null,
       buttons: [
         { type: "button", action: "reset", icon: "fas fa-arrow-rotate-left", label: "CLASSHEADERS.ActorConfig.Reset" },
         { type: "submit", icon: "fas fa-save", label: "SETTINGS.Save" }
