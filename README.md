@@ -29,3 +29,7 @@ https://github.com/ilucepri/class-sheet-headers/releases/latest/download/module.
 ```
 
 Compatibility: Foundry v13–v14, dnd5e 5.x (tested against 5.3.3).
+
+## License
+
+[MIT](LICENSE)
